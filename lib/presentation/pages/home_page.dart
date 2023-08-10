@@ -76,7 +76,8 @@ class _HomePageState extends State<HomePage> {
             }
             if (state is GetAllProductLoaded) {
               return ListView.builder(itemBuilder: ((context, index) {
-                final product = state.listProduct[index];
+                final product = state.listProduct.reversed.toList()[index];
+                //reversed.toList berfungsi untuk melakukan refresh
                 return Card(
                   child: ListTile(
                     leading: CircleAvatar(
@@ -128,17 +129,39 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       width: 16,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        final productModel = ProductModel(
-                            title: titleController.text,
-                            price: int.parse(priceController.text),
-                            description: descriptionController.text);
-                        context.read<CreateProductBloc>().add(
-                            DoCreateProductEvent(productModel: productModel));
-                        Navigator.pop(context);
+                    BlocListener<CreateProductBloc, CreateProductState>(
+                      listener: (context, state) {
+                        // TODO: implement listener
+                        //ketika proses state sudah selesai, maka perintah dibawah melakukan refresh atau mengambil kembali data terbaru
+                        if (state is CreateProductLoaded) {
+                          Navigator.pop(context);
+                          context
+                              .read<GetAllProductBloc>()
+                              .add(DoGetAllProductEvent());
+                        }
                       },
-                      child: const Text('Save'),
+                      child: BlocBuilder<CreateProductBloc, CreateProductState>(
+                        builder: (context, state) {
+                          if (state is CreateProductLoading) {
+                            //ketika proses post/mengirim data ke api sedang diproses, perintah ini akan melakukan tampilan loading setelah data loaded maka akan menampilkan data terbaru
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return ElevatedButton(
+                            onPressed: () {
+                              final productModel = ProductModel(
+                                  title: titleController.text,
+                                  price: int.parse(priceController.text),
+                                  description: descriptionController.text);
+                              context.read<CreateProductBloc>().add(
+                                  DoCreateProductEvent(
+                                      productModel: productModel));
+                            },
+                            child: const Text('Save'),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 );
