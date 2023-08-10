@@ -6,21 +6,38 @@ import 'package:http/http.dart' as http;
 
 class ProductDatasources {
   Future<ProductResponseModel> createProduct(ProductModel model) async {
+    print(model.toJson());
+    var headers = {'Content-Type': 'application/json'};
+
     final response = await http.post(
       Uri.parse('https://api.escuelajs.co/api/v1/products/'),
-      body: model.toMap(),
+      headers: headers,
+      body: model.toJson(),
     );
 
+    print(response.body);
     return ProductResponseModel.fromJson(jsonDecode(response.body));
-  }
 
-  Future<ProductResponseModel> updateProduct(ProductModel model, int id) async {
-    final response = await http.put(
-      Uri.parse('https://api.escuelajs.co/api/v1/products/$id'),
-      body: model.toMap(),
-    );
+    //   final newMap = model.toMap();
+    //   var headers = {'Content-Type': 'application/json'};
+    //   print(model.toJson());
+    //   final response = await http.post(
+    //     Uri.parse('https://api.escuelajs.co/api/v1/products'),
+    //     headers: headers,
+    //     body: model.toJson(),
+    //   );
+    //   print('=====');
+    //   print(response.body);
+    //   return ProductResponseModel.fromJson(jsonDecode(response.body));
+    // }
 
-    return ProductResponseModel.fromJson(jsonDecode(response.body));
+    // Future<ProductResponseModel> updateProduct(ProductModel model, int id) async {
+    //   final response = await http.put(
+    //     Uri.parse('https://api.escuelajs.co/api/v1/products/$id'),
+    //     body: model.toMap(),
+    //   );
+
+    //   return ProductResponseModel.fromJson(jsonDecode(response.body));
   }
 
   Future<ProductResponseModel> getProductById(int id) async {

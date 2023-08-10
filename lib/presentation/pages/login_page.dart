@@ -7,6 +7,8 @@ import 'package:fic4_flutter_auth_bloc/presentation/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../data/localsources/auth_local_storage.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -23,7 +25,21 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement initState
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    isLogin();
+    Future.delayed(Duration(seconds: 2));
     super.initState();
+  }
+
+  void isLogin() async {
+    final isTokenExist = await AuthLocalStorage().isTokenExist();
+    if (isTokenExist) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return const HomePage();
+        }),
+      );
+    }
   }
 
   @override
@@ -71,7 +87,8 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return const HomePage();
-                  }));
+                    }),
+                  );
                 }
               },
               builder: (context, state) {
