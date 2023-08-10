@@ -1,5 +1,6 @@
 import 'package:fic4_flutter_auth_bloc/bloc/register/register_bloc.dart';
 import 'package:fic4_flutter_auth_bloc/data/models/request/register_model.dart';
+import 'package:fic4_flutter_auth_bloc/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,10 +67,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   passwordController!.clear();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
+                      backgroundColor: Colors.blue,
                       content:
                           Text('Success Register with id : ${state.model.id}'),
                     ),
                   );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const LoginPage();
+                  }));
                 }
               },
               builder: (context, state) {
@@ -90,7 +95,20 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     child: const Text('Register'));
               },
-            )
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const LoginPage();
+                  }));
+                },
+                child: const Text(
+                  'Sudah punya akun ? Login',
+                  style: TextStyle(decoration: TextDecoration.underline),
+                ))
           ],
         ),
       ),
